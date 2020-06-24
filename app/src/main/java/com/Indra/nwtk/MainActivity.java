@@ -139,6 +139,8 @@ public class MainActivity extends AppCompatActivity {
                 {                // sign in
 
                     mUsername=user.getDisplayName();
+                    final String useremail=user.getEmail();
+
 
                      temp = "";
 
@@ -152,11 +154,30 @@ public class MainActivity extends AppCompatActivity {
                     ValueEventListener eventListener = new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            if(!dataSnapshot.exists()) {
+
+                            for (DataSnapshot ds : dataSnapshot.getChildren()) {
+
+                                String email = ds.child("email").getValue(String.class);
+                                if(useremail.equals(email))
+                                {
+                                    flag=1;
+                                }
+
+                            }
+                            if(flag==0)
+                            {
+
                                 PersonItem person = new PersonItem(user.getDisplayName(),user.getEmail());
                                 mMessageDatabaseRefrence.push().setValue(person);
+
                             }
+//                            if(!dataSnapshot.exists()) {
+//                            }
+
+
                         }
+
+
 
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
@@ -164,6 +185,9 @@ public class MainActivity extends AppCompatActivity {
                         }
                     };
                     usersdRef.addListenerForSingleValueEvent(eventListener);
+
+
+
 
                     Toast.makeText(MainActivity.this,   "Welcome " + user.getDisplayName() , Toast.LENGTH_SHORT).show();
 
