@@ -11,6 +11,7 @@ import androidx.viewpager.widget.ViewPager;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -138,45 +139,57 @@ public class MainActivity extends AppCompatActivity {
                 {                // sign in
 
                     mUsername=user.getDisplayName();
+                    final String useremail=user.getEmail();
 
 
                      temp = "";
-                    PersonItem person = new PersonItem(user.getDisplayName(),user.getEmail());
 
                     flag=0;
 
-                    mMessageDatabaseRefrence.addValueEventListener(new ValueEventListener() {
+                    //to fetch all the users of firebase Auth app
+                    DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference();
+
+                    DatabaseReference usersdRef = rootRef.child("users");
+
+                    ValueEventListener eventListener = new ValueEventListener() {
                         @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        public void onDataChange(DataSnapshot dataSnapshot) {
 
+                            for (DataSnapshot ds : dataSnapshot.getChildren()) {
 
-                            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                                PersonItem personItem = snapshot.getValue(PersonItem.class);
-
-
-                                temp = temp + " "+ personItem.getEmail();
-                                if(personItem.getName().equals(user.getDisplayName()))
+                                String email = ds.child("email").getValue(String.class);
+                                if(useremail.equals(email))
                                 {
-                                    flag++;
-                                    break;
+                                    flag=1;
                                 }
+
                             }
+                            if(flag==0)
+                            {
+
+                                PersonItem person = new PersonItem(user.getDisplayName(),user.getEmail());
+                                mMessageDatabaseRefrence.push().setValue(person);
+
+                            }
+//                            if(!dataSnapshot.exists()) {
+//                            }
+
 
                         }
+
+
 
                         @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                        public void onCancelled(DatabaseError databaseError) {
 
                         }
-                    });
+                    };
+                    usersdRef.addListenerForSingleValueEvent(eventListener);
 
 
 
-                    if(flag==0) {
-                        mMessageDatabaseRefrence.push().setValue(person);
-                    }
 
-                    Toast.makeText(MainActivity.this,   temp + " " + flag , Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this,   "Welcome " + user.getDisplayName() , Toast.LENGTH_SHORT).show();
 
 
                 }
