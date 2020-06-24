@@ -14,6 +14,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -33,7 +34,7 @@ public class Followers extends AppCompatActivity {
     String fsn="";
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mMessageDatabaseRefrence;
-
+    ArrayList<PersonItem> personItems = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,22 +44,29 @@ public class Followers extends AppCompatActivity {
         title = getIntent().getData().toString();
         setTitle(title);
 
+        //to fetch all the users of firebase Auth app
+        DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference();
 
-        ArrayList<PersonItem> personItems = new ArrayList<>();
-        personItems.add(new PersonItem("Aman Gutpa","ag597482@gmail.com"));
-        personItems.add(new PersonItem("Shalini Verma","ag597482@gmail.com"));
-        personItems.add(new PersonItem("Afsdsd Fafs","ag597482@gmail.com"));
-        personItems.add(new PersonItem("Aman fdsafs","ag597482@gmail.com"));
-        personItems.add(new PersonItem("Aman Grerae","ag597482@gmail.com"));
-        personItems.add(new PersonItem("Aman Gaegaf","ag597482@gmail.com"));
-        personItems.add(new PersonItem("Aman Refea","ag597482@gmail.com"));
-        personItems.add(new PersonItem("Aman Gutpa","ag597482@gmail.com"));
-        personItems.add(new PersonItem("Shalini Verma","ag597482@gmail.com"));
-        personItems.add(new PersonItem("Afsdsd Fafs","ag597482@gmail.com"));
-        personItems.add(new PersonItem("Aman fdsafs","ag597482@gmail.com"));
-        personItems.add(new PersonItem("Aman Grerae","ag597482@gmail.com"));
-        personItems.add(new PersonItem("Aman Gaegaf","ag597482@gmail.com"));
-        personItems.add(new PersonItem("Aman Refea","ag597482@gmail.com"));
+        DatabaseReference usersdRef = rootRef.child("users");
+
+        ValueEventListener eventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                    String email = ds.child("email").getValue(String.class);
+                    String name = ds.child("name").getValue(String.class);
+                    Log.d("TAG", name);
+                    Log.d("TAG", email);
+                    personItems.add(new PersonItem(name,email));
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+        usersdRef.addListenerForSingleValueEvent(eventListener);
 
 
         PersonAdapter personAdapter=new PersonAdapter(this,personItems);
