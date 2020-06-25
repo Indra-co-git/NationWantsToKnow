@@ -39,8 +39,6 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
 
-
-
     private TabLayout tabLayout;
     private ViewPager viewPager;
 
@@ -48,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
 
     int flag;
     String temp;
-
+    public static Uri photoUrl;
     public static final String ANONYMOUS = "anonymous";
 
     public static String mUsername;
@@ -82,13 +80,7 @@ public class MainActivity extends AppCompatActivity {
 
         mMessageDatabaseRefrence = mFirebaseDatabase.getReference().child("users");
 
-
-
-
         mUsername=ANONYMOUS;
-
-
-
 
         tabLayout=findViewById(R.id.tabs);
         viewPager=findViewById(R.id.pager);
@@ -140,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
 
                     mUsername=user.getDisplayName();
                     final String useremail=user.getEmail();
-
+                    photoUrl = user.getPhotoUrl();
 
                      temp = "";
 
