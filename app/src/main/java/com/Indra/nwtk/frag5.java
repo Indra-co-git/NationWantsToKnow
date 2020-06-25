@@ -20,8 +20,10 @@ import java.util.List;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import static com.Indra.nwtk.MainActivity.mUsername;
+import com.squareup.picasso.Picasso;
 
+import static com.Indra.nwtk.MainActivity.mUsername;
+import static com.Indra.nwtk.MainActivity.photoUrl;
 
 
 public class frag5 extends Fragment {
@@ -47,6 +49,21 @@ public class frag5 extends Fragment {
 
         TextView name = root.findViewById(R.id.username);
         name.setText(mUsername);
+        ImageView profileImage = root.findViewById(R.id.profileImage);
+        // Variable holding the original String portion of the url that will be replaced
+        String originalPieceOfUrl = "s96-c/photo.jpg";
+
+        // Variable holding the new String portion of the url that does the replacing, to improve image quality
+        String newPieceOfUrlToAdd = "s400-c/photo.jpg";
+        // Convert the Url to a String and store into a variable
+        String photoPath = photoUrl.toString();
+
+        // Replace the original part of the Url with the new part
+        String newString = photoPath.replace(originalPieceOfUrl, newPieceOfUrlToAdd);
+
+        Picasso.get()
+                .load(newString)
+                .into(profileImage);
 
         TextView follow = root.findViewById(R.id.followers);
         TextView followin = root.findViewById(R.id.following);
