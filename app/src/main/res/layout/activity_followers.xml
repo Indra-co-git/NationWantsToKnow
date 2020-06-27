@@ -42,9 +42,9 @@
         android:visibility="gone"
         android:layout_margin="20dp"
         />
+
     <ListView
         android:id="@+id/persons_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        />
+        android:layout_height="match_parent" />
 </LinearLayout>

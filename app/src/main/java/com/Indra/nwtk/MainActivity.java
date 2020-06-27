@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
     public static Uri photoUrl;
     public static final String ANONYMOUS = "anonymous";
 
-    public static String mUsername;
+    public static String mUsername,mUserid;
 
     private frag1 f1;
     private frag2 f2;
@@ -131,6 +131,7 @@ public class MainActivity extends AppCompatActivity {
                 {                // sign in
 
                     mUsername=user.getDisplayName();
+                    mUserid=user.getUid();
                     final String useremail=user.getEmail();
                     photoUrl = user.getPhotoUrl();
 
@@ -159,8 +160,14 @@ public class MainActivity extends AppCompatActivity {
                             if(flag==0)
                             {
 
+                                String user_email=user.getEmail();
+                                String useremail_id = user_email.replace(".",","); // replaces all dots
+
                                 PersonItem person = new PersonItem(user.getDisplayName(),user.getEmail());
-                                mMessageDatabaseRefrence.push().setValue(person);
+                                mMessageDatabaseRefrence.child(useremail_id).child("profile").setValue(person);
+                                DatabaseReference mMessageDatabaseRefrence_temp=FirebaseDatabase.getInstance().getReference().child("globle").child("user_detail_by_id");
+
+                                mMessageDatabaseRefrence_temp.child(useremail_id).setValue(person);
 
                             }
 //                            if(!dataSnapshot.exists()) {

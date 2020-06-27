@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class PersonItem {
 
-    private String name,email;
+    private String name,email,uid=null;
 
     private ArrayList<String> followers = new ArrayList<String>();
     private ArrayList<String> following = new ArrayList<String>();
@@ -17,6 +17,17 @@ public class PersonItem {
     {
         name=n;
         email=e;
+        uid=null;
+        followers=null;
+        following=null;
+        friendlist=null;
+        requestsent=null;
+    }
+    public PersonItem(String n,String e,String muid)
+    {
+        name=n;
+        email=e;
+        uid=muid;
         followers=null;
         following=null;
         friendlist=null;
@@ -43,6 +54,9 @@ public class PersonItem {
 
     public String getName() {
         return name;
+    }
+    public String getUid() {
+        return uid;
     }
 
     public String getEmail() {

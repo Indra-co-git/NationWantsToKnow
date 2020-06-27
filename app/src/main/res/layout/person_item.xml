@@ -6,42 +6,46 @@
     android:layout_height="60dp"
     android:gravity="center_vertical"
     android:minHeight="?android:attr/listPreferredItemHeight"
+    android:descendantFocusability="blocksDescendants"
     android:orientation="horizontal"
     android:padding="4dp">
 
-
-
-    <TextView
-        android:id="@+id/person_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:text="Aman Gupta"
-        android:textSize="20sp"
-        android:textStyle="bold" />
-
-    <TextView
-        android:id="@+id/person_email"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="8dp"
-        android:text="ag597482@gmail.com"
-        android:textSize="15sp"
-        android:layout_alignParentBottom="true"  />
 
     <Button
         android:id="@+id/followbutton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:text="Follow"
-        android:textColor="@color/colorPrimary"
-        android:background="@color/colorAccent"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="10dp"
+        android:layout_marginEnd="10dp"
 
-        android:layout_alignParentRight="true"/>
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:background="@color/colorAccent"
+        android:clickable="false"
+        android:text="Follow"
+        android:textColor="@color/colorPrimary" />
+
+    <TextView
+        android:id="@+id/person_email"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:text="ag597482@gmail.com"
+        android:textSize="15sp" />
+
+    <TextView
+        android:id="@+id/person_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        android:text="Aman Gupta"
+        android:textSize="20sp"
+        android:textStyle="bold" />
 
 
 </RelativeLayout>
