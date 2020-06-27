@@ -6,9 +6,118 @@
     tools:context=".frag3">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
-
+        android:orientation="vertical">
+        <Spinner
+            android:id="@+id/postType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="20dp"/>
+    <EditText
+        android:background="@drawable/half_circle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/questionPost"
+        android:layout_margin="20dp"
+        android:hint="Write your question here" />
+     <TextView
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:id="@+id/options"
+         android:text="Choose number of options"
+         android:layout_marginLeft="20dp"
+         android:layout_marginRight="20dp"
+         android:textSize="20sp"
+         android:textColor="@color/black">
+     </TextView>
+        <CheckBox
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="2"
+            android:id="@+id/two"
+            android:checked="false"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="20dp"
+            android:textSize="16sp">
+        </CheckBox>
+        <CheckBox
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="3"
+            android:id="@+id/three"
+            android:layout_marginLeft="20dp"
+            android:checked="false"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="20dp"
+            android:textSize="16sp">
+        </CheckBox>
+        <CheckBox
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="4"
+            android:id="@+id/four"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:checked="false"
+            android:layout_marginTop="20dp"
+            android:textSize="16sp">
+        </CheckBox>
+        <EditText
+            android:background="@drawable/half_circle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/option1"
+            android:layout_margin="20dp"
+            android:hint="Option 1" />
+        <EditText
+            android:background="@drawable/half_circle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/option2"
+            android:layout_margin="20dp"
+            android:hint="option 2" />
+        <EditText
+            android:background="@drawable/half_circle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/option3"
+            android:layout_margin="20dp"
+            android:hint="option 3" />
+        <EditText
+            android:background="@drawable/half_circle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/option4"
+            android:layout_margin="20dp"
+            android:hint="option 4" />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/Next"
+            android:layout_gravity="right"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="20dp"
+            android:textSize="20sp"
+            android:id="@+id/nextButton"
+            android:textColor="@color/White"
+            android:background="@color/Blue">
+        </Button>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/Post"
+            android:layout_gravity="right"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="20dp"
+            android:textSize="20sp"
+            android:id="@+id/postButton"
+            android:textColor="@color/White"
+            android:background="@color/Blue">
+        </Button>
+    </LinearLayout>
 </FrameLayout>

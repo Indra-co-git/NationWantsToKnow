@@ -9,6 +9,8 @@
     <!-- ... -->
     <string name="facebook_app_id">621243075151853</string>
     <string name="fb_login_protocol_scheme">fb621243075151853</string>
-
+    <string name="Post">POST</string>
+    <string name="Profile">Profile</string>
+    <string name="Next">Next</string>
 
 </resources>
