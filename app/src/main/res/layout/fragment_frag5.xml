@@ -130,7 +130,7 @@
                     android:id="@+id/finf_friend"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
+                    android:layout_marginEnd="2dp"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="12dp"
                     android:background="#DFDEDE"
@@ -139,9 +139,24 @@
                     android:text="Find Friend"
                     android:textColor="@color/black"
                     android:textSize="16sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="1.0"
+                    app:layout_constraintEnd_toStartOf="@+id/follow_request"
                     app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/edit_profile" />
+
+                <TextView
+                    android:id="@+id/follow_request"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="2dp"
+                    android:layout_marginTop="12dp"
+                    android:background="#DFDEDE"
+                    android:gravity="center"
+                    android:padding="2dp"
+                    android:text="Follow Request"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/finf_friend"
                     app:layout_constraintTop_toBottomOf="@+id/edit_profile" />
 
                 <de.hdodenhof.circleimageview.CircleImageView

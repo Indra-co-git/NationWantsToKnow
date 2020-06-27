@@ -67,6 +67,7 @@ public class frag5 extends Fragment {
 
         TextView follow = root.findViewById(R.id.followers);
         TextView followin = root.findViewById(R.id.following);
+        TextView find_friend=root.findViewById(R.id.finf_friend);
 
         follow.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,6 +75,17 @@ public class frag5 extends Fragment {
 
 
                 Intent intent=new Intent(getContext(),Followers.class);
+                intent.setData(Uri.parse("Followers"));
+                startActivity(intent);
+
+            }
+        });
+        find_friend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+
+                Intent intent=new Intent(getContext(),Find_friend.class);
                 intent.setData(Uri.parse("Followers"));
                 startActivity(intent);
 
