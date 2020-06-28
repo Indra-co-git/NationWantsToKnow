@@ -33,8 +33,6 @@ public class Followers extends AppCompatActivity {
 
     String title;
     Button button;
-
-
     String fsn="";
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mMessageDatabaseRefrence;
@@ -45,28 +43,61 @@ public class Followers extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_followers);
-
         title = getIntent().getData().toString();
+        final String title_temp=title;
+        ListView listView=findViewById(R.id.persons_list);
         setTitle(title);
 
-        //to fetch all the users of firebase Auth app
         DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference();
+        FirebaseUser currentUser_user = FirebaseAuth.getInstance().getCurrentUser() ;
+        String current_user_email= currentUser_user.getEmail();
+        final String userId=current_user_email.replace(".",",");
 
-        DatabaseReference usersdRef = rootRef.child("users");
+        String path1,path2;
+        if(title.equals("Follow Requests"))
+        {
+            path1="follow_request_receive";
+            path2="follow_request_receive_list";
+        }
+        else if(title.equals("Followers"))
+        {
+            path1="follower";
+            path2="follower_list";
+        }
+        else
+        {
+            path1="following";
+            path2="following_list";
+        }
 
+        final DatabaseReference usersdRef= rootRef.child("users").child(userId).child("connection")
+                .child(path1).child(path2);
         ValueEventListener eventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                    if(ds.child("email").exists())
-                    { String email = ds.child("email").getValue(String.class);
-                    String name = ds.child("name").getValue(String.class);
-                    String uid=ds.getKey();
-                    Log.d("TAG", name);
-                    Log.d("TAG", email);
 
-                    Log.d("TAG--------------qwef--", uid);
-                    personItems.add(new PersonItem(name,email,uid));}
+                    Log.i("message---",ds.getKey()+"--------------------------------------------------");
+                    if(ds.child("email").exists())
+                    {
+                        String email = ds.child("email").getValue(String.class);
+                        String name = ds.child("name").getValue(String.class);
+                        String uid=ds.getKey();
+                        Log.d("TAG", name);
+                        Log.d("TAG", email);
+                        Log.d("TAG--------------qwef--", uid);
+                        String calltitle;
+                        if(title_temp.equals("Followers"))
+                            calltitle="Remove";
+                        else if(title_temp.equals("Follow Requests"))
+                            calltitle="Accept";
+                        else
+                            calltitle="Follow";
+                        personItems.add(new PersonItem(name,email,uid,calltitle));
+                        PersonAdapter personAdapter=new PersonAdapter(Followers.this,personItems);
+                        ListView listView=findViewById(R.id.persons_list);
+                        listView.setAdapter(personAdapter);
+                    }
                 }
             }
 
@@ -78,31 +109,15 @@ public class Followers extends AppCompatActivity {
         usersdRef.addListenerForSingleValueEvent(eventListener);
 
 
-        PersonAdapter personAdapter=new PersonAdapter(this,personItems);
-
-        ListView listView=findViewById(R.id.persons_list);
-
-
-
-
-
-        listView.setAdapter(personAdapter);
-
-
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 final PersonItem person_follow= (PersonItem) parent.getItemAtPosition(position);
-
-
-
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser() ;
                 String current_user_email= user.getEmail();
                 final String userId=current_user_email.replace(".",",");
-
                 FirebaseDatabase database =  FirebaseDatabase.getInstance();
-
                         String other_user_email= person_follow.getEmail();
                         String other_userId=other_user_email.replace(".",",");
                 final DatabaseReference mRef =  database.getReference().child("users").child(userId).child("connection").child("Following").child("follower_list").child(other_userId);
@@ -153,8 +168,6 @@ public class Followers extends AppCompatActivity {
         }
         else
             item.setIcon(R.drawable.ic_person_add_black_24dp);
-
-
         return true;
     }
 
@@ -166,8 +179,6 @@ public class Followers extends AppCompatActivity {
                 if(title.equals("Following"))
                 {
                     item.setVisible(true);
-
-
                     DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference();
                     DatabaseReference usersdRef = rootRef.child("users");
                     ValueEventListener eventListener = new ValueEventListener() {
@@ -179,23 +190,15 @@ public class Followers extends AppCompatActivity {
                                 Log.d("TAG", name);
                             }
                         }
-
                         @Override
                         public void onCancelled(DatabaseError databaseError) {}
                     };
                     usersdRef.addListenerForSingleValueEvent(eventListener);
-
-
                     Toast.makeText(this,fsn,Toast.LENGTH_SHORT).show();
-
-
                 }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
-
-
-
 }

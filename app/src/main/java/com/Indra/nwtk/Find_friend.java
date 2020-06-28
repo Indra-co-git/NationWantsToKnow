@@ -1,5 +1,6 @@
 package com.Indra.nwtk;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
@@ -29,10 +30,11 @@ public class Find_friend extends AppCompatActivity {
     Button button;
 
 
+    public int flag=0;
     String fsn="";
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mMessageDatabaseRefrence;
-    ArrayList<PersonItem> personItems = new ArrayList<>();
+    static ArrayList<PersonItem> personItems = new ArrayList<>();
     private FirebaseAuth mAuth;
 
     @Override
@@ -46,58 +48,14 @@ public class Find_friend extends AppCompatActivity {
 
         ListView listView =findViewById(R.id.persons_list);
 
+        personItems.clear();
         find_friend_list_update();
 
-//        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                final PersonItem person_follow= (PersonItem) parent.getItemAtPosition(position);
-//
-//
-//
-//                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser() ;
-//                String current_user_email= user.getEmail();
-//                final String userId=current_user_email.replace(".",",");
-//
-//                FirebaseDatabase database =  FirebaseDatabase.getInstance();
-//
-//                String other_user_email= person_follow.getEmail();
-//                String other_userId=other_user_email.replace(".",",");
-//                final DatabaseReference mRef =  database.getReference().child("users").child(userId).child("connection").child("Following").child("follower_list").child(other_userId);
-//
-//
-//                Log.i("fpllowing firebase","Huraaay-----Inside on item click--------------"+userId+"  - "+other_user_email);
-////
-//                ValueEventListener eventListener = new ValueEventListener() {
-//                    @Override
-//                    public void onDataChange(DataSnapshot dataSnapshot) {
-//
-//                        mRef.setValue(person_follow);
-//                        Log.i("fpllowing firebase","Huraaay-------fpllowing firebase--------------");
-//                    }
-//
-//                    @Override
-//                    public void onCancelled(DatabaseError databaseError) {
-//
-//
-//                        Log.i("fpllowing firebase","Huraaay-------fpllowing firebase failed    --------------");
-//
-//                    }
-//                };
-//                mRef.addListenerForSingleValueEvent(eventListener);
-//
-//            }
-//        });
-
-
     }
-
     private void find_friend_list_update() {
-
-//to fetch all the users of firebase Auth app
         DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference();
 
-        DatabaseReference usersdRef = rootRef.child("globle").child("user_detail_by_id");
+        final DatabaseReference usersdRef = rootRef.child("globle").child("user_detail_by_id");
 
         ValueEventListener eventListener = new ValueEventListener() {
             @Override
@@ -107,25 +65,50 @@ public class Find_friend extends AppCompatActivity {
                     { String email = ds.child("email").getValue(String.class);
                         String name = ds.child("name").getValue(String.class);
                         String uid=ds.getKey();
-                        Log.d("TAG", name);
-                        Log.d("TAG", email);
-
-                        Log.d("TAG--------------qwef--", uid);
-                        personItems.add(new PersonItem(name,email,uid));}
-
+                        Log.d("Email", email);
+                        not_in_follow_request(ds.getKey(),name,email);
+                    }
                 }
-                PersonAdapter personAdapter=new PersonAdapter(Find_friend.this,personItems);
-                ListView listView=findViewById(R.id.persons_list);
-                listView.setAdapter(personAdapter);
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
             }
         };
         usersdRef.addListenerForSingleValueEvent(eventListener);
 
+    }
+
+    public int not_in_follow_request(final String child, final String name, final String email)
+    {
+        DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference();
+
+        FirebaseUser currentUser_user = FirebaseAuth.getInstance().getCurrentUser() ;
+        String current_user_email= currentUser_user.getEmail();
+        final String userId=current_user_email.replace(".",",");
+        final DatabaseReference usersdRef_follow_request_sent = rootRef.child("users").child(userId).child("connection")
+                .child("follow_request_sent").child("follow_request_sent_list");
+        final DatabaseReference usersdRef_follow_request_sent_temp =usersdRef_follow_request_sent.child(child);
+        usersdRef_follow_request_sent_temp.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+
+                }
+                else
+                {
+                    personItems.add(new PersonItem(name,email,child));
+                    PersonAdapter personAdapter=new PersonAdapter(Find_friend.this,personItems);
+                    ListView listView=findViewById(R.id.persons_list);
+                    listView.setAdapter(personAdapter);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+        return 0;
     }
 
     @Override
@@ -152,43 +135,43 @@ public class Find_friend extends AppCompatActivity {
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.menulogo:
-                Toast.makeText(this,title,Toast.LENGTH_SHORT).show();
-                if(title.equals("Following"))
-                {
-                    item.setVisible(true);
-
-
-                    DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference();
-                    DatabaseReference usersdRef = rootRef.child("users");
-                    ValueEventListener eventListener = new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            for(DataSnapshot ds : dataSnapshot.getChildren()) {
-                                String name = ds.child("name").getValue(String.class);
-                                fsn=fsn+name+" ";
-                                Log.d("TAG", name);
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {}
-                    };
-                    usersdRef.addListenerForSingleValueEvent(eventListener);
-
-
-                    Toast.makeText(this,fsn,Toast.LENGTH_SHORT).show();
-
-
-                }
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        switch (item.getItemId()) {
+//            case R.id.menulogo:
+//                Toast.makeText(this,title,Toast.LENGTH_SHORT).show();
+//                if(title.equals("Following"))
+//                {
+//                    item.setVisible(true);
+//
+//
+//                    DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference();
+//                    DatabaseReference usersdRef = rootRef.child("users");
+//                    ValueEventListener eventListener = new ValueEventListener() {
+//                        @Override
+//                        public void onDataChange(DataSnapshot dataSnapshot) {
+//                            for(DataSnapshot ds : dataSnapshot.getChildren()) {
+//                                String name = ds.child("name").getValue(String.class);
+//                                fsn=fsn+name+" ";
+//                                Log.d("TAG", name);
+//                            }
+//                        }
+//
+//                        @Override
+//                        public void onCancelled(DatabaseError databaseError) {}
+//                    };
+//                    usersdRef.addListenerForSingleValueEvent(eventListener);
+//
+//
+//                    Toast.makeText(this,fsn,Toast.LENGTH_SHORT).show();
+//
+//
+//                }
+//                return true;
+//            default:
+//                return super.onOptionsItemSelected(item);
+//        }
+//    }
 
 
 }
