@@ -11,6 +11,8 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -101,7 +103,7 @@ public class PersonAdapter extends ArrayAdapter<PersonItem> {
 
                         }
                     };
-                    mRef.addValueEventListener(eventListener);
+                    mRef.addListenerForSingleValueEvent(eventListener);
 
 
                     button.setText("Request_sent");
@@ -132,54 +134,19 @@ public class PersonAdapter extends ArrayAdapter<PersonItem> {
                     final DatabaseReference mRef_follow =  database.getReference().child("users").child(userId).child("connection")
                             .child("follower").child("follower_list");
 
-
                     //other person reference
                     final DatabaseReference mRef_other_sent =  database.getReference().child("users").child(other_userId).child("connection")
-                            .child("follow_request_receive").child("follow_request_receive_list");
+                            .child("follow_request_sent").child("follow_request_sent_list");
 
                     final DatabaseReference mRef_other_following =  database.getReference().child("users").child(other_userId).child("connection")
                             .child("following").child("following_list");
 
 
-
                     Log.i("fpllowing firebase","Huraaay-----Inside on item click--------------"+userId+"  - "+other_user_email);
 
 
-                    //database update for current user
-                    ValueEventListener eventListener = new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            if(dataSnapshot.exists()) {
-                                Log.i("this exists firebase","Huraaay------------------------------------");
-                            }
-                            PersonItem personItem=dataSnapshot.child(other_userId).getValue(PersonItem.class);
-                            mRef_follow.child(other_userId).setValue(personItem);
-                            mRef_receive.child(other_userId).removeValue();
-                            Log.i("fpllowing firebase","Huraaay-------fpllowing firebase--------------");
-                        }
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {}
-                    };
-                    mRef_receive.addValueEventListener(eventListener);
-
-
-//                    //database update for other
-//                    ValueEventListener eventListener2 = new ValueEventListener() {
-//                        @Override
-//                        public void onDataChange(DataSnapshot dataSnapshot) {
-//                            if(dataSnapshot.exists()) {
-//                                Log.i("this exists firebase","Huraaay-------------------");
-//                            }
-//
-//                            PersonItem personItem=dataSnapshot.child(userId).getValue(PersonItem.class);
-//                            mRef_other_following.setValue(personItem);
-//                            mRef_other_sent.child(userId).removeValue();
-////                            Log.i("fpllowing firebase","Huraaay-------fpllowing firebase-----------------------"+personItem.getName().equals(null));
-//                        }
-//                        @Override
-//                        public void onCancelled(DatabaseError databaseError) {}
-//                    };
-//                    mRef_other_sent.addListenerForSingleValueEvent(eventListener2);
+                    removeFromFirebase(mRef_receive,mRef_follow,other_userId);
+                    removeFromFirebase(mRef_other_sent,mRef_other_following,userId);
 
                     button.setText("Accepted");
                 }
@@ -228,9 +195,41 @@ public class PersonAdapter extends ArrayAdapter<PersonItem> {
 
             }
         });
-
-
         return listItemView;
+    }
+
+
+    private void removeFromFirebase(final DatabaseReference fromPath, final DatabaseReference toPath, final String key) {
+        fromPath.child(key).addListenerForSingleValueEvent(new ValueEventListener() {
+            // Now "DataSnapshot" holds the key and the value at the "fromPath".
+            // Let's move it to the "toPath". This operation duplicates the
+            // key/value pair at the "fromPath" to the "toPath".
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                toPath.child(dataSnapshot.getKey())
+                        .setValue(dataSnapshot.getValue(), new DatabaseReference.CompletionListener() {
+                            @Override
+                            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                                if (databaseError == null) {
+                                    Log.i("TAG", "onComplete: success");
+                                    // In order to complete the move, we are going to erase
+                                    // the original copy by assigning null as its value.
+                                    fromPath.child(key).removeValue();
+                                }
+                                else {
+                                    Log.e("TAG", "onComplete: failure:" + databaseError.getMessage() + ": "
+                                            + databaseError.getDetails());
+                                }
+                            }
+                        });
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.e("TAG", "onCancelled: " + databaseError.getMessage() + ": "
+                        + databaseError.getDetails());
+            }
+        });
     }
 
 
